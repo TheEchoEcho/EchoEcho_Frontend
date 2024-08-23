@@ -1,6 +1,10 @@
 import NFTCard from '../../components/NFTCard';
 import SectionTitle from '../../components/SectionTitle';
+import type { Metadata } from 'next'
 
+export const metadata: Metadata = {
+  title: 'Market | EchoEcho',
+}
 export default function Page() {
 
   const list = [
