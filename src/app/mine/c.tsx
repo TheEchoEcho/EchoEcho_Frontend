@@ -6,7 +6,6 @@ import Modal from '../../components/Modal';
 import { SetStateAction, useEffect, useState } from 'react';
 import { useWriteContract, useAccount } from 'wagmi'
 import { abi as abiServiceNFT_A } from '../../../abi/ServiceNFT_A.json'
-import { abi as abiEchoEcho } from '../../../abi/EchoEcho.json'
 import { toast } from 'react-toastify';
 import { createPublicClient, http } from 'viem'
 import { sepolia } from 'viem/chains'
@@ -29,19 +28,20 @@ export default function Page() {
   const { data: hash, writeContractAsync } = useWriteContract()
 
   useEffect(() => {
+    if(!address) return
     client.getContractEvents({
       address: '0x153745F7FDc3BC2cF3E64FBFcCcE04A2f1B89554',
       abi: abiServiceNFT_A,
       eventName: 'Minted',
       args: {
-        from: address
+        recipient: address
       },
       fromBlock: BigInt(6580040),
       toBlock: 'latest'
     }).then((res) => {
       setMintedList(res)
     })
-  }, [])
+  }, [address])
 
   useEffect(() => {
     const fetchData = async () => {

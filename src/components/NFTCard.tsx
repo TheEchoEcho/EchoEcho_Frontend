@@ -1,4 +1,11 @@
+import { useState } from 'react';
+import Modal from './Modal';
+import { toast } from 'react-toastify';
+import { useWriteContract, useAccount } from 'wagmi'
+import { abi as abiEchoEcho } from '../../abi/EchoEcho.json'
+
 type TData = {
+  tokenId: number;
   title: string;
   description: string;
   image: string;
@@ -12,6 +19,92 @@ type TAttribute = {
 } 
 
 const NFTCard = (data: TData) => {
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalBtnDisabled, setIsModalBtnDisabled] = useState(false);
+  const [currentNFT, setCurrentNFT] = useState<TData | null>(null);
+  const [price, setPrice] = useState('');
+  const [trialPriceBP, setTrialPriceBP] = useState('');
+  const [maxDuration, setMaxDuration] = useState('');
+  const [trialDurationBP, setTrialDurationBP] = useState('');
+  const [listEndTime, setListEndTime] = useState('');
+
+  const { data: hash, writeContractAsync } = useWriteContract()
+
+  const onPriceChange = (e: any) => {
+    if (isNaN(e.target.value)) {
+      toast('Please input a valid price');
+      return;
+    }
+    setPrice(e.target.value);
+  }
+
+  const onTrialPriceBPChange = (e: any) => {
+    if (isNaN(e.target.value) || parseInt(e.target.value) < 0 || parseInt(e.target.value) > 10000) {
+      toast('Please input a valid trial price BP');
+      return;
+    }
+    setTrialPriceBP(e.target.value);
+  }
+
+  const onMaxDurationChange = (e: any) => {
+    if (isNaN(e.target.value)) {
+      toast('Please input a valid max duration');
+      return;
+    }
+    setMaxDuration(e.target.value);
+  }
+
+  const onTrialDurationBPChange = (e: any) => {
+    if (isNaN(e.target.value) || parseInt(e.target.value) < 0 || parseInt(e.target.value) > 10000) {
+      toast('Please input a valid trial duration BP');
+      return;
+    }
+    setTrialDurationBP(e.target.value);
+  }
+
+  const onListEndTimeChange = (e: any) => {
+    // const timestamp = new Date(e.target.value).getTime();
+    // console.log(timestamp / 1000);
+    // setListEndTime(Math.floor(Number(timestamp) / 1000).toString());
+    console.log(e.target.value);
+    setListEndTime(e.target.value);
+  }
+
+  const onList = (data: TData) => {
+    console.log('List', data);
+    setCurrentNFT(data);
+    setIsModalOpen(true);
+
+  }
+
+  const listNFT = async () => {
+    if (!currentNFT) {
+      toast('Please select an NFT');
+      return;
+    }
+    if (!price || !trialPriceBP || !maxDuration || !trialDurationBP || !listEndTime) {
+      toast('Please input all fields');
+      return;
+    }
+    const _price = BigInt(parseFloat(price) * 10 ** 18);
+    const _trialPriceBP = BigInt(trialPriceBP);
+    const _maxDuration = BigInt(Number(maxDuration) * 3600);
+    const _trialDurationBP = BigInt(trialDurationBP);
+    const _listEndTime = BigInt(Math.floor(new Date(listEndTime).getTime() / 1000));
+
+    await writeContractAsync({
+      address: "0x3c4f3D947376f2a6E6dB9F6dB51Aec9B1Bf75613",
+      abi: abiEchoEcho,
+      functionName: "list",
+      args: [BigInt(currentNFT?.tokenId), _price, _trialPriceBP, _trialDurationBP, _maxDuration, _listEndTime]
+    }).then(res => {
+      setIsModalOpen(false)
+      toast('List successfully!')
+    })
+    
+  }
+
   return (
     <div className="w-80 rounded-lg overflow-hidden shadow-lg bg-gray-800 text-white m-2">
       <img className="w-full h-60 object-cover" src={data.image} alt={data.title} />
@@ -33,7 +126,10 @@ const NFTCard = (data: TData) => {
           ):null
         }
       <div>
-        <button className="w-full h-10 bg-gradient-to-r from-gray-700 to-gray-500 text-white font-bold rounded-lg transition-transform transform-gpu hover:-translate-y-1 hover:shadow-lg">
+        <button 
+          className="w-full h-10 bg-gradient-to-r from-gray-700 to-gray-500 text-white font-bold rounded-lg transition-transform transform-gpu hover:-translate-y-1 hover:shadow-lg"
+          onClick={() => onList(data)}
+        >
           List
         </button>
       </div>
@@ -48,6 +144,31 @@ const NFTCard = (data: TData) => {
           </div>
         ):null
       }
+
+      <Modal btnDisabled={isModalBtnDisabled} isOpen={isModalOpen} title='Mint NFT' onClose={() => { setIsModalOpen(false) }} onSubmit={() => listNFT()}>
+        <div className='text-gray-600'>
+          <div>Price:</div>
+          <input type="text" placeholder="Price (ETH)"
+            value={price} onChange={onPriceChange}
+            className="mb-2 text-gray-600 w-full h-10 px-2 border border-gray-300 rounded-lg focus:outline-none focus:border-gray-500" />
+          <div>Trial Price BP:</div>
+          <input type="text" placeholder="Trial Price BP (0 - 10000)"
+            value={trialPriceBP} onChange={onTrialPriceBPChange}
+            className="mb-2 text-gray-600 w-full h-10 px-2 border border-gray-300 rounded-lg focus:outline-none focus:border-gray-500" />
+          <div>Max Duration:</div>
+          <input type="text" placeholder="Max Duration (in hours)"
+            value={maxDuration} onChange={onMaxDurationChange}
+            className="mb-2 text-gray-600 w-full h-10 px-2 border border-gray-300 rounded-lg focus:outline-none focus:border-gray-500" />
+          <div>Trial Duration BP:</div>
+          <input type="text" placeholder="Trial Duration BP (0 - 10000)"
+            value={trialDurationBP} onChange={onTrialDurationBPChange}
+            className="mb-2 text-gray-600 w-full h-10 px-2 border border-gray-300 rounded-lg focus:outline-none focus:border-gray-500" />
+          <div>List End Time:</div>
+          <input type="datetime-local" placeholder="List End Time"
+            value={listEndTime} onChange={onListEndTimeChange}
+            className="mb-2 text-gray-600 w-full h-10 px-2 border border-gray-300 rounded-lg focus:outline-none focus:border-gray-500" />
+        </div>
+      </Modal>
     </div>
   );
 };
