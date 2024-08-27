@@ -41,14 +41,16 @@ const localhost = {
 
 export const config = getDefaultConfig({
   appName: 'RainbowKit App',
-  projectId: process.env.NEXT_PUBLIC_PROJECT_ID as string,
+  // projectId: process.env.NEXT_PUBLIC_PROJECT_ID as string,
+  projectId: '48d2dc02a08917fabc83d6e7175b9442',
   chains: [
     mainnet,
     polygon,
     optimism,
     arbitrum,
     base,
-    ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === 'true' ? [sepolia, localhost] : []),
+    // ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === 'true' ? [sepolia, localhost] : []),
+    sepolia
   ],
   ssr: true,
 });
