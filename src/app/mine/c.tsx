@@ -3,11 +3,85 @@
 import NFTCard from '../../components/NFTCard';
 import SectionTitle from '../../components/SectionTitle';
 import Modal from '../../components/Modal';
-import React from 'react';
+import { SetStateAction, useEffect, useState } from 'react';
+import { useWriteContract, useAccount } from 'wagmi'
+import { abi } from '../../../abi/ServiceNFT_A.json'
+import { toast } from 'react-toastify';
+import { createPublicClient, http } from 'viem'
+import { sepolia } from 'viem/chains'
+
+const client = createPublicClient({
+  chain: sepolia,
+  transport: http('https://sepolia.infura.io/v3/32076fdc1eec4d01975b561943bd7e8d'),
+})
 
 export default function Page() {
 
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const { address } = useAccount()
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [uri, setUri] = useState('https://ipfs.io/ipfs/CID1')
+  const [mintedList, setMintedList] = useState<any[]>([])
+  const [uriList, setUriList] = useState<any[]>([])
+
+  const { data: hash, writeContractAsync } = useWriteContract()
+
+  useEffect(() => {
+    client.getContractEvents({
+      address: '0x153745F7FDc3BC2cF3E64FBFcCcE04A2f1B89554',
+      abi: abi,
+      eventName: 'Minted',
+      args: {
+        from: address
+      },
+      fromBlock: BigInt(6575195),
+      toBlock: 'latest'
+    }).then((res) => {
+      setMintedList(res)
+    })
+  }, [])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const list: SetStateAction<any[]> = []
+      for (const item of mintedList) {
+        const uri = await getTokenURI(item.args.tokenId)
+        list.push({
+          tokenId: item.args.tokenId,
+          uri: uri
+        })
+      }
+      setUriList(list)
+    }
+    fetchData()
+  }, [mintedList])
+
+  async function mintNFT() {
+    if (!uri) {
+      toast('Please input the uri')
+      return
+    }
+    await writeContractAsync({
+      address: "0x153745F7FDc3BC2cF3E64FBFcCcE04A2f1B89554",
+      abi: abi,
+      functionName: "mint_A",
+      args: [address, uri]
+    }).then(res => {
+      console.log(res)
+      setIsModalOpen(false)
+      toast('Mint successfully! the tokenId is ' + res)
+    })
+  }
+
+  async function getTokenURI(tokenId: string) {
+    const res = await client.readContract({
+      address: "0x153745F7FDc3BC2cF3E64FBFcCcE04A2f1B89554",
+      abi: abi,
+      functionName: "tokenURI",
+      args: [tokenId]
+    })
+    return res
+  }
 
   const list = [
     {
@@ -30,9 +104,9 @@ export default function Page() {
     <div>
       <div className='flex justify-between'>
         <SectionTitle title="My NFTs" />
-        <button 
+        <button
           className="w-20 h-10 bg-gradient-to-b from-gray-800 to-gray-500 text-white font-bold rounded-lg transition-transform transform-gpu hover:-translate-y-1 hover:shadow-lg"
-          onClick={() => { setIsModalOpen(true) }}  
+          onClick={() => { setIsModalOpen(true) }}
         >
           Mint
         </button>
@@ -51,10 +125,21 @@ export default function Page() {
           ))
         }
       </div>
-      <Modal isOpen={isModalOpen} title='Mint NFT' onClose={() => { setIsModalOpen(false) }}>
+      <div>
+        {
+          uriList.map((item, index) => {
+            return <div key={index}>
+              <p>{Number(item.tokenId)}</p>
+              <p>{item.uri}</p>
+            </div>
+          })
+        }
+      </div>
+      <Modal isOpen={isModalOpen} title='Mint NFT' onClose={() => { setIsModalOpen(false) }} onSubmit={() => mintNFT()}>
         <div>
-          <h1 className="text-2xl font-semibold">Modal Title</h1>
-          <p className="text-gray-500">Some content here</p>
+          <input type="text" placeholder="uri"
+            value={uri} onChange={(e) => { setUri(e.target.value) }}
+            className="w-full h-10 px-2 border border-gray-300 rounded-lg focus:outline-none focus:border-gray-500" />
         </div>
       </Modal>
     </div>

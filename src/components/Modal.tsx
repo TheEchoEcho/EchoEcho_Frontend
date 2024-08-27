@@ -3,7 +3,13 @@
 import React from 'react';
 import { X } from 'lucide-react';
 
-const Modal = ({ isOpen, title, onClose, children }: { isOpen: boolean, title: string, onClose: () => void, children: React.ReactNode }) => {
+const Modal = ({ isOpen, title, onClose, onSubmit, children }: { 
+  isOpen: boolean, 
+  title: string, 
+  onClose: () => void, 
+  onSubmit: () => void, 
+  children: React.ReactNode 
+}) => {
   if (!isOpen) return null;
 
   return (
@@ -34,7 +40,7 @@ const Modal = ({ isOpen, title, onClose, children }: { isOpen: boolean, title: s
             <button
               className="bg-gray-700 text-white active:bg-gray-500 font-bold uppercase text-sm px-4 py-2 rounded-lg shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1"
               type="button"
-              onClick={onClose}
+              onClick={onSubmit}
             >
               Submit
             </button>

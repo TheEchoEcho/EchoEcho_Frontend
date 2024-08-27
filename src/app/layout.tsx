@@ -2,6 +2,7 @@ import '../styles/globals.css';
 import '@rainbow-me/rainbowkit/styles.css';
 import { Providers } from './providers';
 import Header from '../components/Header';
+import { ToastContainer } from 'react-toastify';
 
 function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -15,6 +16,7 @@ function RootLayout({ children }: { children: React.ReactNode }) {
             {children}
           </div>
         </Providers>
+        <ToastContainer />
       </body>
     </html>
   );
