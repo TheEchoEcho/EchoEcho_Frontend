@@ -41,7 +41,7 @@ export default function Page() {
   return (
     <div>
       <SectionTitle title="NFTs On Sell" />
-      <div className="flex flex-wrap -m-2">
+      {/* <div className="flex flex-wrap -m-2">
         {
           list.map((item, index) => (
             <NFTCard
@@ -54,7 +54,7 @@ export default function Page() {
             />
           ))
         }
-      </div>
+      </div> */}
     </div>
   );
 }

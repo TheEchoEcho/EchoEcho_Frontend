@@ -5,7 +5,8 @@ import SectionTitle from '../../components/SectionTitle';
 import Modal from '../../components/Modal';
 import { SetStateAction, useEffect, useState } from 'react';
 import { useWriteContract, useAccount } from 'wagmi'
-import { abi } from '../../../abi/ServiceNFT_A.json'
+import { abi as abiServiceNFT_A } from '../../../abi/ServiceNFT_A.json'
+import { abi as abiEchoEcho } from '../../../abi/EchoEcho.json'
 import { toast } from 'react-toastify';
 import { createPublicClient, http } from 'viem'
 import { sepolia } from 'viem/chains'
@@ -30,7 +31,7 @@ export default function Page() {
   useEffect(() => {
     client.getContractEvents({
       address: '0x153745F7FDc3BC2cF3E64FBFcCcE04A2f1B89554',
-      abi: abi,
+      abi: abiServiceNFT_A,
       eventName: 'Minted',
       args: {
         from: address
@@ -67,7 +68,7 @@ export default function Page() {
     setIsModalBtnDisabled(true)
     await writeContractAsync({
       address: "0x153745F7FDc3BC2cF3E64FBFcCcE04A2f1B89554",
-      abi: abi,
+      abi: abiServiceNFT_A,
       functionName: "mint_A",
       args: [address, uri]
     }).then(res => {
@@ -80,7 +81,7 @@ export default function Page() {
   async function getTokenURI(tokenId: string) {
     const res = await client.readContract({
       address: "0x153745F7FDc3BC2cF3E64FBFcCcE04A2f1B89554",
-      abi: abi,
+      abi: abiServiceNFT_A,
       functionName: "tokenURI",
       args: [tokenId]
     })
