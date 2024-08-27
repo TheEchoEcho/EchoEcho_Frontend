@@ -9,7 +9,7 @@ function RootLayout({ children }: { children: React.ReactNode }) {
     <html lang="en">
       <body>
         <Providers>
-          <div className='h-16 fixed top-0 left-0 right-0'>
+          <div className='h-16 fixed top-0 left-0 right-0 z-10'>
             <Header />
           </div>
           <div className='mt-16 p-4'>

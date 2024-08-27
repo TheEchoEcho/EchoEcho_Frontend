@@ -20,7 +20,8 @@ export default function Page() {
   const { address } = useAccount()
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [uri, setUri] = useState('https://ipfs.io/ipfs/CID1')
+  const [isModalBtnDisabled, setIsModalBtnDisabled] = useState(true);
+  const [uri, setUri] = useState('')
   const [mintedList, setMintedList] = useState<any[]>([])
   const [uriList, setUriList] = useState<any[]>([])
 
@@ -34,7 +35,7 @@ export default function Page() {
       args: {
         from: address
       },
-      fromBlock: BigInt(6575195),
+      fromBlock: BigInt(6580040),
       toBlock: 'latest'
     }).then((res) => {
       setMintedList(res)
@@ -46,9 +47,11 @@ export default function Page() {
       const list: SetStateAction<any[]> = []
       for (const item of mintedList) {
         const uri = await getTokenURI(item.args.tokenId)
+        const res = await fetch(`https://ipfs.io/ipfs/${uri}`)
+        const metaData = await res.json()
         list.push({
-          tokenId: item.args.tokenId,
-          uri: uri
+          tokenId: Number(item.args.tokenId),
+          ...metaData
         })
       }
       setUriList(list)
@@ -61,13 +64,14 @@ export default function Page() {
       toast('Please input the uri')
       return
     }
+    setIsModalBtnDisabled(true)
     await writeContractAsync({
       address: "0x153745F7FDc3BC2cF3E64FBFcCcE04A2f1B89554",
       abi: abi,
       functionName: "mint_A",
       args: [address, uri]
     }).then(res => {
-      console.log(res)
+      setUri('')
       setIsModalOpen(false)
       toast('Mint successfully! the tokenId is ' + res)
     })
@@ -83,27 +87,15 @@ export default function Page() {
     return res
   }
 
-  const list = [
-    {
-      title: "Cosmic Harmony #42",
-      description: "A mesmerizing digital artwork that captures the essence of universal balance.",
-      creator: "CryptoArtist99",
-      price: "0.5",
-      imageUrl: "https://p5.img.cctvpic.com/photoworkspace/contentimg/2023/03/30/2023033011303020756.jpg"
-    },
-    {
-      title: "Cosmic Harmony #42",
-      description: "A mesmerizing digital artwork that captures the essence of universal balance.",
-      creator: "CryptoArtist99",
-      price: "0.5",
-      imageUrl: "https://p5.img.cctvpic.com/photoworkspace/contentimg/2023/03/30/2023033011303020756.jpg"
-    }
-  ]
+  const onInputChange = (e: { target: { value: SetStateAction<string>; }; }) => { 
+    setUri(e.target.value) 
+    setIsModalBtnDisabled(!e.target.value)
+  }
 
   return (
     <div>
       <div className='flex justify-between'>
-        <SectionTitle title="My NFTs" />
+        <SectionTitle title="My Services" />
         <button
           className="w-20 h-10 bg-gradient-to-b from-gray-800 to-gray-500 text-white font-bold rounded-lg transition-transform transform-gpu hover:-translate-y-1 hover:shadow-lg"
           onClick={() => { setIsModalOpen(true) }}
@@ -113,32 +105,15 @@ export default function Page() {
       </div>
       <div className="flex flex-wrap -m-2">
         {
-          list.map((item, index) => (
-            <NFTCard
-              key={index}
-              title={item.title}
-              description={item.description}
-              creator={item.creator}
-              price={item.price}
-              imageUrl={item.imageUrl}
-            />
+          uriList.map((item, index) => (
+            <NFTCard key={index} {...item} />
           ))
         }
       </div>
-      <div>
-        {
-          uriList.map((item, index) => {
-            return <div key={index}>
-              <p>{Number(item.tokenId)}</p>
-              <p>{item.uri}</p>
-            </div>
-          })
-        }
-      </div>
-      <Modal isOpen={isModalOpen} title='Mint NFT' onClose={() => { setIsModalOpen(false) }} onSubmit={() => mintNFT()}>
+      <Modal btnDisabled={isModalBtnDisabled} isOpen={isModalOpen} title='Mint NFT' onClose={() => { setIsModalOpen(false) }} onSubmit={() => mintNFT()}>
         <div>
-          <input type="text" placeholder="uri"
-            value={uri} onChange={(e) => { setUri(e.target.value) }}
+          <input type="text" placeholder="CID"
+            value={uri} onChange={onInputChange}
             className="w-full h-10 px-2 border border-gray-300 rounded-lg focus:outline-none focus:border-gray-500" />
         </div>
       </Modal>
