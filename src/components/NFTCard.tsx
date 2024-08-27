@@ -5,6 +5,7 @@ import { useWriteContract, useAccount } from 'wagmi'
 import { abi as abiEchoEcho } from '../../abi/EchoEcho.json'
 
 type TData = {
+  status: string;
   tokenId: number;
   title: string;
   description: string;
@@ -16,7 +17,7 @@ type TData = {
 type TAttribute = {
   [key: string]: string;
   value: string;
-} 
+}
 
 const NFTCard = (data: TData) => {
 
@@ -102,7 +103,7 @@ const NFTCard = (data: TData) => {
       setIsModalOpen(false)
       toast('List successfully!')
     })
-    
+
   }
 
   return (
@@ -123,16 +124,20 @@ const NFTCard = (data: TData) => {
                 ))
               }
             </div>
-          ):null
+          ) : null
         }
-      <div>
-        <button 
-          className="w-full h-10 bg-gradient-to-r from-gray-700 to-gray-500 text-white font-bold rounded-lg transition-transform transform-gpu hover:-translate-y-1 hover:shadow-lg"
-          onClick={() => onList(data)}
-        >
-          List
-        </button>
-      </div>
+        {
+          data.status === 'minted' ? (
+            <div>
+              <button
+                className="w-full h-10 bg-gradient-to-r from-gray-700 to-gray-500 text-white font-bold rounded-lg transition-transform transform-gpu hover:-translate-y-1 hover:shadow-lg"
+                onClick={() => onList(data)}
+              >
+                List
+              </button>
+            </div>
+          ) : null
+        }
       </div>
       {
         data.price ? (
@@ -142,7 +147,7 @@ const NFTCard = (data: TData) => {
               {data.price} ETH
             </span>
           </div>
-        ):null
+        ) : null
       }
 
       <Modal btnDisabled={isModalBtnDisabled} isOpen={isModalOpen} title='Mint NFT' onClose={() => { setIsModalOpen(false) }} onSubmit={() => listNFT()}>

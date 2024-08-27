@@ -7,13 +7,7 @@ import { SetStateAction, useEffect, useState } from 'react';
 import { useWriteContract, useAccount } from 'wagmi'
 import { abi as abiServiceNFT_A } from '../../../abi/ServiceNFT_A.json'
 import { toast } from 'react-toastify';
-import { createPublicClient, http } from 'viem'
-import { sepolia } from 'viem/chains'
-
-const client = createPublicClient({
-  chain: sepolia,
-  transport: http('https://sepolia.infura.io/v3/32076fdc1eec4d01975b561943bd7e8d'),
-})
+import { client } from '../providers'
 
 export default function Page() {
 
@@ -52,6 +46,7 @@ export default function Page() {
         const metaData = await res.json()
         list.push({
           tokenId: Number(item.args.tokenId),
+          status: 'minted',
           ...metaData
         })
       }
@@ -96,12 +91,12 @@ export default function Page() {
   return (
     <div>
       <div className='flex justify-between'>
-        <SectionTitle title="My Services" />
+        <SectionTitle title="Services I Created" />
         <button
-          className="w-20 h-10 bg-gradient-to-b from-gray-800 to-gray-500 text-white font-bold rounded-lg transition-transform transform-gpu hover:-translate-y-1 hover:shadow-lg"
+          className="px-3 h-10 bg-gradient-to-b from-gray-800 to-gray-500 text-white font-bold rounded-lg transition-transform transform-gpu hover:-translate-y-1 hover:shadow-lg"
           onClick={() => { setIsModalOpen(true) }}
         >
-          Mint
+          Create
         </button>
       </div>
       <div className="flex flex-wrap -m-2">
@@ -111,7 +106,7 @@ export default function Page() {
           ))
         }
       </div>
-      <Modal btnDisabled={isModalBtnDisabled} isOpen={isModalOpen} title='Mint NFT' onClose={() => { setIsModalOpen(false) }} onSubmit={() => mintNFT()}>
+      <Modal btnDisabled={isModalBtnDisabled} isOpen={isModalOpen} title='Create New Service' onClose={() => { setIsModalOpen(false) }} onSubmit={() => mintNFT()}>
         <div>
           <input type="text" placeholder="CID"
             value={uri} onChange={onInputChange}
