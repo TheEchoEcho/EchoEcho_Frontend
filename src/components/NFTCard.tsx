@@ -104,17 +104,24 @@ const NFTCard = (data: TData) => {
   }
 
   const onWant = async () => {
-    console.log(data.serviceInfo);
     const res = await writeContractAsync({
       address: "0x37a20FB4FB275CCf658f508C29bba8f8Af93fD31",
       abi: abiEchoEcho,
       functionName: "consumerWantBuy",
       args: [data.serviceInfo]
     })
-    toast('Submit successfully, please wait!')
-    console.log(res);
-    
+    toast('Submit successfully, please wait for agreement!')
+  }
 
+  const onBuy = async () => {
+    const res = await writeContractAsync({
+      address: "0x37a20FB4FB275CCf658f508C29bba8f8Af93fD31",
+      abi: abiEchoEcho,
+      functionName: "buy",
+      args: [data.serviceInfo],
+      value: data.serviceInfo.price
+    })
+    toast('Buy successfully, please wait for agreement!')
   }
 
   return (
@@ -151,7 +158,7 @@ const NFTCard = (data: TData) => {
         }
       </div>
       {
-        data.status === 'listed' ? (
+        data.status === 'listed' || data.status === 'bought' ? (
           <>
             <div className="px-3 pt-1 flex justify-between items-center border-t border-gray-700">
               <span className="text-sm text-gray-500">Current Price</span>
@@ -175,24 +182,29 @@ const NFTCard = (data: TData) => {
               <span className="text-sm text-gray-500">List End Time</span>
               <span className="text-base flex items-center text-gray-300">{new Date(Number(data.serviceInfo.list_endtime) * 1000).toLocaleString()}</span>
             </div>
-            <div className='flex p-3 justify-between'>
-              <button
-                className="w-[32%] h-10 bg-gradient-to-r from-gray-700 to-gray-500 text-white font-bold rounded-lg transition-transform transform-gpu hover:-translate-y-1 hover:shadow-lg"
-              >
-                Chat
-              </button>
-              <button
-                className="w-[32%] h-10 bg-gradient-to-r from-blue-500 to-blue-300 text-white font-bold rounded-lg transition-transform transform-gpu hover:-translate-y-1 hover:shadow-lg"
-                onClick={onWant}
-              >
-                I Want
-              </button>
-              <button
-                className="w-[32%] h-10 bg-gradient-to-r from-orange-500 to-orange-300 text-white font-bold rounded-lg transition-transform transform-gpu hover:-translate-y-1 hover:shadow-lg"
-              >
-                Buy Now
-              </button>
-            </div>
+            {
+              data.status === 'listed' ? (
+                <div className='flex p-3 justify-between'>
+                  <button
+                    className="w-[32%] h-10 bg-gradient-to-r from-gray-700 to-gray-500 text-white font-bold rounded-lg transition-transform transform-gpu hover:-translate-y-1 hover:shadow-lg"
+                  >
+                    Chat
+                  </button>
+                  <button
+                    className="w-[32%] h-10 bg-gradient-to-r from-blue-500 to-blue-300 text-white font-bold rounded-lg transition-transform transform-gpu hover:-translate-y-1 hover:shadow-lg"
+                    onClick={onWant}
+                  >
+                    I Want
+                  </button>
+                  <button
+                    className="w-[32%] h-10 bg-gradient-to-r from-orange-500 to-orange-300 text-white font-bold rounded-lg transition-transform transform-gpu hover:-translate-y-1 hover:shadow-lg"
+                    onClick={onBuy}
+                  >
+                    Buy Now
+                  </button>
+                </div>
+              ) : null
+            }
           </>
         ) : null
       }

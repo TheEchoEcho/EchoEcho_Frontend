@@ -5,6 +5,7 @@ import SectionTitle from '../../components/SectionTitle';
 import { client } from '../providers'
 import { abi as abiEchoEcho } from '../../../abi/EchoEcho.json'
 import { useWriteContract, useAccount } from 'wagmi'
+import { toast } from 'react-toastify';
 
 type TService = {
   consumer: string;
@@ -76,6 +77,7 @@ const ServiceTable = () => {
         serviceInfo
       ]
     })
+    toast('Agree successfully!')
     updateTable();
   }
 
