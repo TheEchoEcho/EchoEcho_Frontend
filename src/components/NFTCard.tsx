@@ -12,6 +12,7 @@ type TData = {
   image: string;
   price?: number;
   attributes?: TAttribute[];
+  serviceInfo?: any;
 }
 
 type TAttribute = {
@@ -95,7 +96,7 @@ const NFTCard = (data: TData) => {
     const _listEndTime = BigInt(Math.floor(new Date(listEndTime).getTime() / 1000));
 
     await writeContractAsync({
-      address: "0x3c4f3D947376f2a6E6dB9F6dB51Aec9B1Bf75613",
+      address: "0x37a20FB4FB275CCf658f508C29bba8f8Af93fD31",
       abi: abiEchoEcho,
       functionName: "list",
       args: [BigInt(currentNFT?.tokenId), _price, _trialPriceBP, _trialDurationBP, _maxDuration, _listEndTime]
@@ -117,7 +118,7 @@ const NFTCard = (data: TData) => {
             <div className="mt-2">
               {
                 data.attributes.map((attr, index) => (
-                  <div key={index} className="flex justify-between mb-2">
+                  <div key={index} className="flex justify-between mb-1">
                     <span className="text-sm text-gray-500">{attr.type || attr.trait_type}</span>
                     <span className="text-sm text-gray-400 text-right">{attr.value}</span>
                   </div>
@@ -140,13 +141,43 @@ const NFTCard = (data: TData) => {
         }
       </div>
       {
-        data.price ? (
-          <div className="px-3 py-2 flex justify-between items-center border-t border-gray-700">
-            <span className="text-sm text-gray-400">Current Price</span>
-            <span className="text-xl font-bold flex items-center">
-              {data.price} ETH
-            </span>
-          </div>
+        data.status === 'listed' ? (
+          <>
+            <div className="px-3 pt-1 flex justify-between items-center border-t border-gray-700">
+              <span className="text-sm text-gray-500">Current Price</span>
+              <span className="text-xl font-bold flex items-center text-gray-300">
+                {Number(data.serviceInfo.price) / (10 ** 18)} ETH
+              </span>
+            </div>
+            <div className="px-3 pt-1 flex justify-between items-center">
+              <span className="text-sm text-gray-500">Trial Price</span>
+              <span className="text-base flex items-center text-gray-300">{Number(data.serviceInfo.trialPriceBP) / 100}%</span>
+            </div>
+            <div className="px-3 pt-1 flex justify-between items-center">
+              <span className="text-sm text-gray-500">Max Duration</span>
+              <span className="text-base flex items-center text-gray-300">{Number(data.serviceInfo.max_duration) / 3600} Hours</span>
+            </div>
+            <div className="px-3 pt-1 flex justify-between items-center">
+              <span className="text-sm text-gray-500">Trial Duration</span>
+              <span className="text-base flex items-center text-gray-300">{Number(data.serviceInfo.trialDurationBP) / 100}%</span>
+            </div>
+            <div className="px-3 pt-1 flex justify-between items-center pb-1 border-b border-gray-700">
+              <span className="text-sm text-gray-500">List End Time</span>
+              <span className="text-base flex items-center text-gray-300">{new Date(Number(data.serviceInfo.list_endtime) * 1000).toLocaleString()}</span>
+            </div>
+            <div className='flex p-3 justify-between'>
+              <button
+                className="w-[48%] h-10 bg-gradient-to-r from-gray-700 to-gray-500 text-white font-bold rounded-lg transition-transform transform-gpu hover:-translate-y-1 hover:shadow-lg"
+              >
+                I Want
+              </button>
+              <button
+                className="w-[48%] h-10 bg-gradient-to-r from-gray-700 to-gray-500 text-white font-bold rounded-lg transition-transform transform-gpu hover:-translate-y-1 hover:shadow-lg"
+              >
+                Buy Now
+              </button>
+            </div>
+          </>
         ) : null
       }
 
