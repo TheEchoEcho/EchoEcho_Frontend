@@ -167,12 +167,17 @@ const NFTCard = (data: TData) => {
             </div>
             <div className='flex p-3 justify-between'>
               <button
-                className="w-[48%] h-10 bg-gradient-to-r from-gray-700 to-gray-500 text-white font-bold rounded-lg transition-transform transform-gpu hover:-translate-y-1 hover:shadow-lg"
+                className="w-[32%] h-10 bg-gradient-to-r from-gray-700 to-gray-500 text-white font-bold rounded-lg transition-transform transform-gpu hover:-translate-y-1 hover:shadow-lg"
+              >
+                Chat
+              </button>
+              <button
+                className="w-[32%] h-10 bg-gradient-to-r from-blue-500 to-blue-300 text-white font-bold rounded-lg transition-transform transform-gpu hover:-translate-y-1 hover:shadow-lg"
               >
                 I Want
               </button>
               <button
-                className="w-[48%] h-10 bg-gradient-to-r from-gray-700 to-gray-500 text-white font-bold rounded-lg transition-transform transform-gpu hover:-translate-y-1 hover:shadow-lg"
+                className="w-[32%] h-10 bg-gradient-to-r from-orange-500 to-orange-300 text-white font-bold rounded-lg transition-transform transform-gpu hover:-translate-y-1 hover:shadow-lg"
               >
                 Buy Now
               </button>

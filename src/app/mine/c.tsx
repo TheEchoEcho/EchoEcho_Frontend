@@ -106,6 +106,9 @@ export default function Page() {
           ))
         }
       </div>
+      <div className='mt-10'>
+        <SectionTitle title="Services I Bought" />
+      </div>
       <Modal btnDisabled={isModalBtnDisabled} isOpen={isModalOpen} title='Create New Service' onClose={() => { setIsModalOpen(false) }} onSubmit={() => mintNFT()}>
         <div>
           <input type="text" placeholder="CID"
