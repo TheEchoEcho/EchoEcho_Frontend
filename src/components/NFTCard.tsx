@@ -66,9 +66,6 @@ const NFTCard = (data: TData) => {
   }
 
   const onListEndTimeChange = (e: any) => {
-    // const timestamp = new Date(e.target.value).getTime();
-    // console.log(timestamp / 1000);
-    // setListEndTime(Math.floor(Number(timestamp) / 1000).toString());
     console.log(e.target.value);
     setListEndTime(e.target.value);
   }
@@ -104,6 +101,19 @@ const NFTCard = (data: TData) => {
       setIsModalOpen(false)
       toast('List successfully!')
     })
+  }
+
+  const onWant = async () => {
+    console.log(data.serviceInfo);
+    const res = await writeContractAsync({
+      address: "0x37a20FB4FB275CCf658f508C29bba8f8Af93fD31",
+      abi: abiEchoEcho,
+      functionName: "consumerWantBuy",
+      args: [data.serviceInfo]
+    })
+    toast('Submit successfully, please wait!')
+    console.log(res);
+    
 
   }
 
@@ -173,6 +183,7 @@ const NFTCard = (data: TData) => {
               </button>
               <button
                 className="w-[32%] h-10 bg-gradient-to-r from-blue-500 to-blue-300 text-white font-bold rounded-lg transition-transform transform-gpu hover:-translate-y-1 hover:shadow-lg"
+                onClick={onWant}
               >
                 I Want
               </button>
