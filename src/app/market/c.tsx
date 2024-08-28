@@ -15,7 +15,7 @@ export default function Page() {
 
   useEffect(() => {
     client.getContractEvents({
-      address: '0x37a20FB4FB275CCf658f508C29bba8f8Af93fD31',
+      address: '0x0E5411a8139bFd38fbe19ce9ED8224Ff12b575Ab',
       abi: abiEchoEcho,
       eventName: 'List',
       fromBlock: BigInt(6580040),
@@ -30,7 +30,7 @@ export default function Page() {
 
   async function getServiceInfo(_list: any[]) {
     const getServiceInfos: any = _list.map((item: any) => ({
-      address: '0x37a20FB4FB275CCf658f508C29bba8f8Af93fD31',
+      address: '0x0E5411a8139bFd38fbe19ce9ED8224Ff12b575Ab',
       abi: abiEchoEcho,
       functionName: 'getServiceInfo',
       args: [item.args.serviceInfoHash]

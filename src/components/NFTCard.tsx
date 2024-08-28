@@ -93,7 +93,7 @@ const NFTCard = (data: TData) => {
     const _listEndTime = BigInt(Math.floor(new Date(listEndTime).getTime() / 1000));
 
     await writeContractAsync({
-      address: "0x37a20FB4FB275CCf658f508C29bba8f8Af93fD31",
+      address: "0x0E5411a8139bFd38fbe19ce9ED8224Ff12b575Ab",
       abi: abiEchoEcho,
       functionName: "list",
       args: [BigInt(currentNFT?.tokenId), _price, _trialPriceBP, _trialDurationBP, _maxDuration, _listEndTime]
@@ -105,7 +105,7 @@ const NFTCard = (data: TData) => {
 
   const onWant = async () => {
     const res = await writeContractAsync({
-      address: "0x37a20FB4FB275CCf658f508C29bba8f8Af93fD31",
+      address: "0x0E5411a8139bFd38fbe19ce9ED8224Ff12b575Ab",
       abi: abiEchoEcho,
       functionName: "consumerWantBuy",
       args: [data.serviceInfo]
@@ -115,7 +115,7 @@ const NFTCard = (data: TData) => {
 
   const onBuy = async () => {
     const res = await writeContractAsync({
-      address: "0x37a20FB4FB275CCf658f508C29bba8f8Af93fD31",
+      address: "0x0E5411a8139bFd38fbe19ce9ED8224Ff12b575Ab",
       abi: abiEchoEcho,
       functionName: "buy",
       args: [data.serviceInfo],

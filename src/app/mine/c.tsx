@@ -26,7 +26,7 @@ export default function Page() {
 
   const renderBoughtService = async () => {
     const res1 = await client.getContractEvents({
-      address: '0x37a20FB4FB275CCf658f508C29bba8f8Af93fD31',
+      address: '0x0E5411a8139bFd38fbe19ce9ED8224Ff12b575Ab',
       abi: abiEchoEcho,
       eventName: 'ServiceBought',
       args: {
@@ -37,7 +37,7 @@ export default function Page() {
     })
     console.log(res1);
     const getServiceInfos: any = res1.map((item: any) => ({
-      address: '0x37a20FB4FB275CCf658f508C29bba8f8Af93fD31',
+      address: '0x0E5411a8139bFd38fbe19ce9ED8224Ff12b575Ab',
       abi: abiEchoEcho,
       functionName: 'getServiceInfo',
       args: [item.args.serviceInfoHash]

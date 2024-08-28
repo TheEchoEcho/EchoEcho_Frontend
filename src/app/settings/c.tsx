@@ -46,7 +46,7 @@ const ServiceTable = () => {
   
   const updateTable = async () => {
     const res = await client.getContractEvents({
-      address: '0x37a20FB4FB275CCf658f508C29bba8f8Af93fD31',
+      address: '0x0E5411a8139bFd38fbe19ce9ED8224Ff12b575Ab',
       abi: abiEchoEcho,
       eventName: 'PreBuyOrderStatus',
       args: {
@@ -62,14 +62,14 @@ const ServiceTable = () => {
 
   const onAgree = async (index: number) => {
     const serviceInfo = await client.readContract({
-      address: '0x37a20FB4FB275CCf658f508C29bba8f8Af93fD31',
+      address: '0x0E5411a8139bFd38fbe19ce9ED8224Ff12b575Ab',
       abi: abiEchoEcho,
       functionName: 'getServiceInfo',
       args: [list[index].serviceInfoHash]
     })
     console.log(serviceInfo);
     await writeContractAsync({
-      address: "0x37a20FB4FB275CCf658f508C29bba8f8Af93fD31",
+      address: "0x0E5411a8139bFd38fbe19ce9ED8224Ff12b575Ab",
       abi: abiEchoEcho,
       functionName: "providerCanService",
       args: [
