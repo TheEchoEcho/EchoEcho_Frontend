@@ -137,7 +137,7 @@ const OrdersTable = () => {
                     >
                       Agree
                     </button>
-                  ) : null
+                  ) : '-'
                 }
               </td>
             </tr>
@@ -153,7 +153,23 @@ const ServicesTable = () => {
   const { data: hash, writeContractAsync } = useWriteContract()
   const [list, setList] = useState<any[]>([])
   const { address } = useAccount()
-  const onWithdraw = async (index: number) => { }
+  const onWithdraw = async (index: number) => {
+    console.log(list[index].serviceInfoHash)
+    const serviceInfo = await client.readContract({
+      address: '0x0E5411a8139bFd38fbe19ce9ED8224Ff12b575Ab',
+      abi: abiEchoEcho,
+      functionName: 'getServiceInfo',
+      args: [list[index].serviceInfoHash]
+    })
+    await writeContractAsync({
+      address: "0x0E5411a8139bFd38fbe19ce9ED8224Ff12b575Ab",
+      abi: abiEchoEcho,
+      functionName: "serviceWithdraw",
+      args: [serviceInfo]
+    })
+    toast('Withdraw successfully!')
+    updateTable();
+  }
 
   async function getBalances(_list: any[]) {
     const balances: any = _list.map((item: any) => ({
@@ -168,11 +184,11 @@ const ServicesTable = () => {
     setList(res.map((item: any, index: number) => ({
       balance: Number(item.result) / (10 ** 18),
       hash: _list[index].args.serviceInfoHash.slice(-8),
+      serviceInfoHash: _list[index].args.serviceInfoHash
     })))
   }
 
-  useEffect(() => {
-    if (!address) return
+  const updateTable = () => {
     client.getContractEvents({
       address: '0x0E5411a8139bFd38fbe19ce9ED8224Ff12b575Ab',
       abi: abiEchoEcho,
@@ -186,6 +202,11 @@ const ServicesTable = () => {
       console.log(res);
       getBalances(res)
     })
+  }
+
+  useEffect(() => {
+    if (!address) return
+    updateTable()
   }, [address])
 
   return (
