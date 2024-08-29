@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Map from '../components/Map'
 
 export const metadata: Metadata = {
   title: 'Home | EchoEcho',
@@ -6,9 +7,9 @@ export const metadata: Metadata = {
 
 function Page() {
   return (
-      <div>
-        Home
-      </div>
+    <div>
+      <Map center={[22.35, 113.599]} />
+    </div>
   );
 }
 
