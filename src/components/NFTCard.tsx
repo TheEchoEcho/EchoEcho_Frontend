@@ -191,11 +191,13 @@ const NFTCard = (data: TData) => {
             {
               data.status === 'listed' ? (
                 <div className='flex p-3 justify-between'>
-                  <button
-                    className="w-[32%] h-10 bg-gradient-to-r from-gray-700 to-gray-500 text-white font-bold rounded-lg transition-transform transform-gpu hover:-translate-y-1 hover:shadow-lg"
-                  >
-                    Chat
-                  </button>
+                    <button
+                      className="w-[32%] h-10 bg-gradient-to-r from-gray-700 to-gray-500 text-white font-bold rounded-lg transition-transform transform-gpu hover:-translate-y-1 hover:shadow-lg"
+                    >
+                      <a href="http://113.45.157.148/" target='_blank' className='flex justify-center items-center h-full'>
+                        Chat
+                      </a>
+                    </button>
                   <button
                     className="w-[32%] h-10 bg-gradient-to-r from-blue-500 to-blue-300 text-white font-bold rounded-lg transition-transform transform-gpu hover:-translate-y-1 hover:shadow-lg"
                     onClick={onWant}
