@@ -6,6 +6,8 @@ import { client } from '../providers'
 import { abi as abiEchoEcho } from '../../../abi/EchoEcho.json'
 import { useWriteContract, useAccount } from 'wagmi'
 import { toast } from 'react-toastify';
+import EmptyState from '../../components/EmptyState';
+import { getLocation } from '../../utils/getLocation'
 
 type TOrder = {
   consumer: string;
@@ -112,7 +114,7 @@ const OrdersTable = () => {
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
-          {list.map((order: TOrder, index: number) => (
+          {list.length > 0 ? list.map((order: TOrder, index: number) => (
             <tr key={index}>
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="text-sm text-gray-900" title={order.consumer}>{formatAddress(order.consumer)}</div>
@@ -141,9 +143,10 @@ const OrdersTable = () => {
                 }
               </td>
             </tr>
-          ))}
+          )) : null}
         </tbody>
       </table>
+      { list.length === 0 ? <EmptyState /> : null }
     </div>
   );
 };
@@ -204,6 +207,25 @@ const ServicesTable = () => {
     })
   }
 
+  const onLocate = async (index: number) => {
+    console.log(list[index].serviceInfoHash)
+    const serviceInfo: any = await client.readContract({
+      address: '0x0E5411a8139bFd38fbe19ce9ED8224Ff12b575Ab',
+      abi: abiEchoEcho,
+      functionName: 'getServiceInfo',
+      args: [list[index].serviceInfoHash]
+    })
+    const position: any = await getLocation()
+    await writeContractAsync({
+      address: "0x0E5411a8139bFd38fbe19ce9ED8224Ff12b575Ab",
+      abi: abiEchoEcho,
+      functionName: "upgradeLocation",
+      args: [serviceInfo.token_id, Math.ceil(position.latitude * 10 ** 4), Math.ceil(position.longitude * 10 ** 4)]
+    })
+    toast('Update Location successfully!')
+    updateTable();
+  }
+
   useEffect(() => {
     if (!address) return
     updateTable()
@@ -226,7 +248,7 @@ const ServicesTable = () => {
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
-          {list.map((service: any, index: number) => (
+          {list.length > 0 ? list.map((service: any, index: number) => (
             <tr key={index}>
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="text-sm text-gray-900">{service.hash}</div>
@@ -238,18 +260,25 @@ const ServicesTable = () => {
                 {
                   service.balance > 0 ? (
                     <button
-                      className="bg-blue-500 hover:bg-blue-600 text-white py-1 px-2 rounded mr-2"
+                      className="bg-orange-500 hover:bg-orange-600 text-white py-1 px-2 rounded mr-2"
                       onClick={() => onWithdraw(index)}
                     >
                       Withdraw
                     </button>
                   ) : null
                 }
+                <button
+                      className="bg-blue-500 hover:bg-blue-600 text-white py-1 px-2 rounded mr-2"
+                      onClick={() => onLocate(index)}
+                    >
+                      Locate
+                    </button>
               </td>
             </tr>
-          ))}
+          )) : null}
         </tbody>
       </table>
+      { list.length === 0 ? <EmptyState /> : null }
     </div>
   );
 }

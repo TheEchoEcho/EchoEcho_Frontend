@@ -12,7 +12,7 @@ function Header() {
   const navItems = [
     // { href: '/', label: 'Home', icon: House },
     { href: '/market', label: 'Market', icon: BadgeDollarSign },
-    { href: '/mine', label: 'Services', icon: HandPlatter },
+    { href: '/services', label: 'Services', icon: HandPlatter },
     { href: '/settings', label: 'Settings', icon: Settings },
   ]
   return (

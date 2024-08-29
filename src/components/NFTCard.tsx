@@ -154,7 +154,7 @@ const NFTCard = (data: TData) => {
           data.status === 'minted' ? (
             <div>
               <button
-                className="w-full h-10 bg-gradient-to-r from-gray-700 to-gray-500 text-white font-bold rounded-lg transition-transform transform-gpu hover:-translate-y-1 hover:shadow-lg"
+                className="w-full h-10 bg-gradient-to-r from-blue-500 to-blue-300 text-white font-bold rounded-lg transition-transform transform-gpu hover:-translate-y-1 hover:shadow-lg"
                 onClick={() => onList(data)}
               >
                 List
