@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
-import Map from '../components/Map'
+import dynamic from 'next/dynamic';
+
+const Map = dynamic(import('../components/Map'), { ssr: false });
 
 export const metadata: Metadata = {
   title: 'Home | EchoEcho',
