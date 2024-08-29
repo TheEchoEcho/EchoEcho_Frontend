@@ -4,13 +4,13 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import clsx from 'clsx';
-import { Nfc, BadgeDollarSign, HandPlatter, Settings } from 'lucide-react';
+import { Nfc, BadgeDollarSign, HandPlatter, Settings, MapPinned } from 'lucide-react';
 
 function Header() {
   const pathname = usePathname()
 
   const navItems = [
-    // { href: '/', label: 'Home', icon: House },
+    { href: '/', label: 'Map', icon: MapPinned },
     { href: '/market', label: 'Market', icon: BadgeDollarSign },
     { href: '/services', label: 'Services', icon: HandPlatter },
     { href: '/settings', label: 'Settings', icon: Settings },
