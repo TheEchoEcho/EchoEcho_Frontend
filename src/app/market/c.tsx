@@ -2,7 +2,7 @@
 
 import NFTCard from '../../components/NFTCard';
 import SectionTitle from '../../components/SectionTitle';
-import { useWriteContract, useAccount } from 'wagmi'
+import EmptyState from '../../components/EmptyState';
 import { abi as abiServiceNFT_A } from '../../../abi/ServiceNFT_A.json'
 import { abi as abiEchoEcho } from '../../../abi/EchoEcho.json'
 import { toast } from 'react-toastify';
@@ -26,7 +26,7 @@ export default function Page() {
     })
   }, [])
 
-  
+
 
   async function getServiceInfo(_list: any[]) {
     const getServiceInfos: any = _list.map((item: any) => ({
@@ -60,8 +60,9 @@ export default function Page() {
     setList(nftInfos.map((item: any, index: number) => ({
       ...item,
       status: 'listed',
+      serviceHash: _list[index].args.serviceInfoHash,
       serviceInfo: serviceInfos[index].result
-    })))    
+    })))
   }
 
   return (
@@ -69,9 +70,9 @@ export default function Page() {
       <SectionTitle title="Available Services" />
       <div className="flex flex-wrap -m-2">
         {
-          list.map((item, index) => (
+          list.length > 0 ? list.map((item, index) => (
             <NFTCard key={index} {...item} />
-          ))
+          )) : <EmptyState />
         }
       </div>
     </div>

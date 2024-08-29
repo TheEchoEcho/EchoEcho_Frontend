@@ -3,6 +3,7 @@
 import NFTCard from '../../components/NFTCard';
 import SectionTitle from '../../components/SectionTitle';
 import Modal from '../../components/Modal';
+import EmptyState from '../../components/EmptyState';
 import { SetStateAction, useEffect, useState } from 'react';
 import { useWriteContract, useAccount } from 'wagmi'
 import { abi as abiServiceNFT_A } from '../../../abi/ServiceNFT_A.json'
@@ -69,11 +70,11 @@ export default function Page() {
       status: 'bought',
       serviceInfo: serviceInfos[index].result
     })))
-    
+
   }
 
   useEffect(() => {
-    if(!address) return
+    if (!address) return
     client.getContractEvents({
       address: '0x153745F7FDc3BC2cF3E64FBFcCcE04A2f1B89554',
       abi: abiServiceNFT_A,
@@ -89,7 +90,7 @@ export default function Page() {
   }, [address])
 
   useEffect(() => {
-    if(!address) return
+    if (!address) return
     renderBoughtService()
   }, [address])
 
@@ -139,8 +140,8 @@ export default function Page() {
     return res
   }
 
-  const onInputChange = (e: { target: { value: SetStateAction<string>; }; }) => { 
-    setUri(e.target.value) 
+  const onInputChange = (e: { target: { value: SetStateAction<string>; }; }) => {
+    setUri(e.target.value)
     setIsModalBtnDisabled(!e.target.value)
   }
 
@@ -157,20 +158,20 @@ export default function Page() {
       </div>
       <div className="flex flex-wrap -m-2">
         {
-          uriList.map((item, index) => (
+          uriList.length > 0 ? uriList.map((item, index) => (
             <NFTCard key={index} {...item} />
-          ))
+          )) : <EmptyState />
         }
       </div>
       <div className='mt-10'>
         <SectionTitle title="Services I Bought" />
         <div className="flex flex-wrap -m-2">
-        {
-          boughtList.map((item, index) => (
-            <NFTCard key={index} {...item} />
-          ))
-        }
-      </div>
+          {
+            boughtList.length > 0 ? boughtList.map((item, index) => (
+              <NFTCard key={index} {...item} />
+            )) : <EmptyState />
+          }
+        </div>
       </div>
       <Modal btnDisabled={isModalBtnDisabled} isOpen={isModalOpen} title='Create New Service' onClose={() => { setIsModalOpen(false) }} onSubmit={() => mintNFT()}>
         <div>

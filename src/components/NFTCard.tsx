@@ -13,6 +13,7 @@ type TData = {
   price?: number;
   attributes?: TAttribute[];
   serviceInfo?: any;
+  serviceHash?: string;
 }
 
 type TAttribute = {
@@ -129,6 +130,11 @@ const NFTCard = (data: TData) => {
       <img className="w-full h-60 object-cover" src={data.image} alt={data.title} />
       <div className="px-3 py-2">
         <div className="font-bold text-xl mb-2">{data.title}</div>
+        {
+          data.status === 'listed' ? (
+            <div className="mb-2 border border-gray-200 rounded inline-block px-2 bg-gray-700">{data.serviceHash?.slice(-8)}</div>
+          ) : null
+        }
         <p className="text-gray-400 text-sm line-clamp-3" title={data.description}>{data.description}</p>
         {
           data.attributes ? (
