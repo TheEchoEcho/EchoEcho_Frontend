@@ -125,6 +125,16 @@ const NFTCard = (data: TData) => {
     toast('Buy successfully, please wait for agreement!')
   }
 
+  const onCancel = async () => {
+    const res = await writeContractAsync({
+      address: "0x0E5411a8139bFd38fbe19ce9ED8224Ff12b575Ab",
+      abi: abiEchoEcho,
+      functionName: "cancelOrder",
+      args: [data.serviceInfo]
+    })
+    toast('Cancel successfully!')
+  }
+
   return (
     <div className="w-80 rounded-lg overflow-hidden shadow-lg bg-gray-800 text-white m-2">
       <img className="w-full h-60 object-cover" src={data.image} alt={data.title} />
@@ -210,6 +220,18 @@ const NFTCard = (data: TData) => {
                   >
                     Buy Now
                   </button>
+                </div>
+              ) : null
+            }
+            {
+              data.status === 'bought' ? (
+                <div className='p-4'>
+                  <button
+                      className="w-full h-10 bg-gradient-to-r from-gray-500 to-gray-300 text-white font-bold rounded-lg transition-transform transform-gpu hover:-translate-y-1 hover:shadow-lg"
+                      onClick={onCancel}
+                    >
+                      Cancel Service
+                    </button>
                 </div>
               ) : null
             }
